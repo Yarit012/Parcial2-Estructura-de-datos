@@ -1,0 +1,190 @@
+//Preguntas de binary tree para parcial 2 del examen en java 15
+
+//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+///Pregunta 1: Arbol binario y sus tipos
+//Para un arbol normal no existe un limite para el numero de hijo ni de nodos epspecíficos 
+//-Full binary tree: Cada nodo que tenga todas sus ramas (2 ramas como máximo y en este caso en total por cada nodo) tiene 2 nodos hijos (osea 2 por cada rama)
+
+//-Arbol binario completo: Todos los niveles del arbol están COMPLETOS a excepción del último nivel en algunois casos, mientras que todos los niveles anteriorres se encuentran completos en su totalidad.
+
+//-Arbol binario Perfecto: Todos los nodos tioenen 2 hijos y todas las ramas son del mismo nivel
+
+//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+//2. Como es el heap binario implementado 
+
+//Para la implementacion de un arbol binario de tipo heap, es necesaria la utilización de un arreglo, el arbol binario en el heap
+//siempre es un arbol binario completo, por lo que puede almaacenarse de forma compacta. No se requiere espacio para punteros, pero en este caso,
+//el padre y el hijo de cada nodo puede ser encontrado de forma aritmetica (calculo de las posiciones) ya que en este caso contamos con el inidce que
+//es correspondiente a los arreglos.
+//(Si se desea comprobar el codigo copiar en un compilador y guardar de la siguiente forma BinaryHeap.java) y despues compilar ya que se trabaja con la memoria local (Heap)
+
+public class BinaryHeap {
+    private int[] heap;
+    private int size;
+    private int capacity;
+
+    // Constructor para inicializar el heap
+    public BinaryHeap(int capacity) {
+        this.capacity = capacity;
+        this.size = 0;
+        this.heap = new int[capacity];
+    }
+
+    // Obtener el índice del padre
+    private int parent(int index) {
+        return (index - 1) / 2;
+    }
+
+    // Obtener el índice del hijo izquierdo
+    private int leftChild(int index) {
+        return 2 * index + 1;
+    }
+
+    // Obtener el índice del hijo derecho
+    private int rightChild(int index) {
+        return 2 * index + 2;
+    }
+
+    // Insertar un elemento en el heap
+    public void insert(int value) {
+        if (size == capacity) {
+            throw new IllegalStateException("Heap is full");
+        }
+
+        // Insertar al final y ajustar
+        heap[size] = value;
+        size++;
+        heapifyUp(size - 1);
+    }
+
+    // Mover el nodo hacia arriba para mantener la propiedad del heap
+    private void heapifyUp(int index) {
+        int current = index;
+        while (current > 0 && heap[current] < heap[parent(current)]) {
+            swap(current, parent(current));
+            current = parent(current);
+        }
+    }
+
+    // Extraer el valor mínimo del Min-Heap
+    public int extractMin() {
+        if (size == 0) {
+            throw new IllegalStateException("Heap is empty");
+        }
+
+        int min = heap[0];
+        heap[0] = heap[size - 1];
+        size--;
+        heapifyDown(0);
+        return min;
+    }
+
+    // Mover el nodo hacia abajo para mantener la propiedad del heap
+    private void heapifyDown(int index) {
+        int smallest = index;
+        int left = leftChild(index);
+        int right = rightChild(index);
+
+        if (left < size && heap[left] < heap[smallest]) {
+            smallest = left;
+        }
+        if (right < size && heap[right] < heap[smallest]) {
+            smallest = right;
+        }
+        if (smallest != index) {
+            swap(index, smallest);
+            heapifyDown(smallest);
+        }
+    }
+
+    // Intercambiar dos elementos en el arreglo
+    private void swap(int index1, int index2) {
+        int temp = heap[index1];
+        heap[index1] = heap[index2];
+        heap[index2] = temp;
+    }
+
+    // Imprimir el contenido del heap
+    public void printHeap() {
+        for (int i = 0; i < size; i++) {
+            System.out.print(heap[i] + " ");
+        }
+        System.out.println();
+    }
+
+    public static void main(String[] args) {
+        BinaryHeap minHeap = new BinaryHeap(10);
+        
+        minHeap.insert(10);
+        minHeap.insert(20);
+        minHeap.insert(5);
+        minHeap.insert(30);
+        minHeap.insert(1);
+        
+        System.out.println("Contenido del heap:");
+        minHeap.printHeap();
+        
+        System.out.println("Extraer mínimo: " + minHeap.extractMin());
+        System.out.println("Contenido del heap después de extraer:");
+        minHeap.printHeap();
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+///Pregunta 4: Implemente un recorrido de preorden transversal para un arbol binario utilizando recursion
+/*
+Procesar el nodo actual (N).
+Recorrer recursivamente el subárbol izquierdo (L).
+Recorrer recursivamente el subárbol derecho (R).
+A continuación, se implementoa el recorrido en preorden utilizando Java:
+
+    //Funcion recursiva para desarrollar un pre-orden transversal del arbol
+    public static void preorder(TreeNode root)
+
+      //regresar si el nodo actual esta vacio
+      if (root == null){
+      return;
+      }
+
+    //Muestra en pantalla la parte de datos de la raiz (O el nodo actual)
+    System.out.print(root.data + "");
+
+    //Subarbol de la izquierda transversal
+    preorder(root.left);
+
+    //Subarbol derecho transversal
+    preorder(root.right);
+
+
+//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+/// Pregunta 5: Que es el binary heap
+//Binary heap: Es un arbol binario con las siguientes propiedades:
+  //Arbol completo (todos los niveles completos excepto posiblemente el ultimo, se dad ya que el ultimo nivel tiene todas las keys lo mas a la izquierda posible). Lo hace apropiado para ser almacenado en un arreglo.
+  //Un binary heap es un Min Heap o Max Heap. 
+  //Min binary heap: La key en la raiz debe ser minima entre todas las llaves presentes en el binary heap
+  //La misma propiedad debe ser recursivamente real para todos los nodos en un arbol binario. 
+
+
+//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+///Pregunta 6: Que es un arbol de busqueda binario
+//Estructura de datos que permite mantener de forma rapida un ""sorted list" de numeros
+//-Cada nodo tiene maximmo dos hijos
+//-Se llama un arbol de busqueda por que puede ser utilizado para buscar la presencia de un numero en complejidad temporal de O(log n) 
+
+//propiedades que separan a un arbol binario de busqueda de un arbol binario regular son los siguientes:
+
+//-Todos los nodos del lado izquierdo del arbol son menores que el nodo raiz
+//- Todos los nodos del lado derecho son mayores que el nodo raiz
+//-Ambos subarboles de cada nodo son tambien arboles binarios de bisqueda y tienen las mismas propiedades anteriores.
+
+
+
+
